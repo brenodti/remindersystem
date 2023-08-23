@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Reminders System</string>
+    <string name="button_new_reminder">NEW REMINDER</string>
+    <string name="name_hint_edit_text_reminder_form">Name</string>
+    <string name="date_hint_edit_text_reminder_form">Date</string>
+    <string name="save_button_reminder_form">SAVE</string>
+    <string name="delete_item_reminder_details_menu">Delete</string>
+</resources>
