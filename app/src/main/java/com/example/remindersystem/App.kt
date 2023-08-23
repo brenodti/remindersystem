@@ -3,8 +3,8 @@ package com.example.remindersystem
 import android.app.Application
 import com.example.remindersystem.db.ReminderDatabase
 import com.example.remindersystem.db.repository.ReminderRepository
-import com.example.remindersystem.viewmodel.form.NewReminderFormViewModel
-import com.example.remindersystem.viewmodel.list.ReminderListViewModel
+import com.example.remindersystem.ui.form.NewReminderFormViewModel
+import com.example.remindersystem.ui.list.ReminderListViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.startKoin

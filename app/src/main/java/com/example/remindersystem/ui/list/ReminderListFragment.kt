@@ -9,7 +9,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.remindersystem.databinding.FragmentReminderListBinding
 import com.example.remindersystem.ui.list.recyclerview.adapter.ReminderGroupListAdapter
-import com.example.remindersystem.viewmodel.list.ReminderListViewModel
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel

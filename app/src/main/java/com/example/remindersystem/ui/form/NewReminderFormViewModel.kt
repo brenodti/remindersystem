@@ -1,7 +1,5 @@
-package com.example.remindersystem.viewmodel.form
+package com.example.remindersystem.ui.form
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.remindersystem.db.repository.ReminderRepository
 import com.example.remindersystem.model.Reminder

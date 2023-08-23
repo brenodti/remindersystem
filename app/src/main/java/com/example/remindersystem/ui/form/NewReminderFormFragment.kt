@@ -10,7 +10,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.remindersystem.databinding.FragmentNewReminderFormBinding
 import com.example.remindersystem.model.Reminder
-import com.example.remindersystem.viewmodel.form.NewReminderFormViewModel
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
