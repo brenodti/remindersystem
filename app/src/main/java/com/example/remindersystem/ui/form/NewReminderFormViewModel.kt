@@ -22,33 +22,32 @@ class NewReminderFormViewModel(private val repository: ReminderRepository) : Vie
 
     private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-    val date = MutableLiveData("")
-    val name = MutableLiveData("")
+    val date = MutableStateFlow("")
+    val name = MutableStateFlow("")
 
     private val _events = MutableSharedFlow<Event>()
     val events: SharedFlow<Event> = _events.asSharedFlow()
 
     fun addNewReminder() {
-        viewModelScope.launch {
-            if (areFieldsValid()) {
-                saveReminder()
-                handleEvent(Event.GoToReminderListFragment)
-            } else {
-                handleEvent(Event.ShowToast("Fields must not be empty"))
-            }
+        if (areFieldsValid()) {
+            saveReminder()
+            handleEvent(Event.GoToReminderListFragment)
+        } else {
+            handleEvent(Event.ShowToast("Fields must not be empty"))
         }
     }
 
-    private suspend fun saveReminder() {
-        val formattedDate = LocalDate.parse(date.value, dateFormatter)
-        val reminder = Reminder(name = name.value!!, date = formattedDate)
-
-        repository.insertReminder(reminder)
-    }
-
     private fun areFieldsValid() =
-        name.value?.trim()!!.isNotEmpty() && date.value?.trim()!!.isNotEmpty()
+        name.value.trim().isNotEmpty() && date.value.trim().isNotEmpty()
 
+    private fun saveReminder() {
+        val formattedDate = LocalDate.parse(date.value, dateFormatter)
+        val reminder = Reminder(name = name.value, date = formattedDate)
+
+        viewModelScope.launch {
+            repository.insertReminder(reminder)
+        }
+    }
 
     fun handleEvent(event: Event) {
         viewModelScope.launch {
