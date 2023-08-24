@@ -6,7 +6,7 @@
     <data>
         <variable
             name="ShowDatePickerEvent"
-            type="com.example.remindersystem.events.Event.ShowDatePicker" />
+            type="com.example.remindersystem.ui.form.NewReminderFormEvent.ShowDatePicker" />
         <variable
             name="viewModel"
             type="com.example.remindersystem.ui.form.NewReminderFormViewModel" />

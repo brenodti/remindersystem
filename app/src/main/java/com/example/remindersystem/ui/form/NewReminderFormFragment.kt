@@ -5,24 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.remindersystem.databinding.FragmentNewReminderFormBinding
-import com.example.remindersystem.events.Event
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class NewReminderFormFragment : Fragment() {
 
-    private val viewModel: NewReminderFormViewModel by viewModel()
+    private val viewModel: NewReminderFormViewModel by viewModel{
+        parametersOf(findNavController())
+    }
 
     private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
@@ -43,29 +44,23 @@ class NewReminderFormFragment : Fragment() {
 
     private fun bindEventsAndViewModel() {
         binding.viewModel = viewModel
-        binding.showDatePickerEvent = Event.ShowDatePicker
+        binding.showDatePickerEvent = NewReminderFormEvent.ShowDatePicker
     }
 
     private fun observeEvents() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.events.collect { event ->
                 when (event) {
-                    is Event.ShowToast -> showToast(event)
-                    is Event.GoToReminderListFragment -> gotToReminderListFragment()
-                    is Event.ShowDatePicker -> showDatePickerDialog()
+                    is NewReminderFormEvent.ShowToast -> showToast(event)
+                    is NewReminderFormEvent.ShowDatePicker -> showDatePickerDialog()
+                    else -> { }
                 }
             }
         }
     }
 
-    private fun showToast(event: Event.ShowToast) {
+    private fun showToast(event: NewReminderFormEvent.ShowToast) {
         Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun gotToReminderListFragment() {
-        val action =
-            NewReminderFormFragmentDirections.actionNewReminderFormFragmentToReminderListFragment()
-        findNavController().navigate(action)
     }
 
     private fun showDatePickerDialog() {
@@ -99,3 +94,4 @@ class NewReminderFormFragment : Fragment() {
             .format(dateFormatter)
     }
 }
+

@@ -12,10 +12,13 @@ import com.example.remindersystem.ui.list.recyclerview.adapter.ReminderGroupList
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class ReminderListFragment : Fragment() {
 
-    private val viewModel: ReminderListViewModel by viewModel()
+    private val viewModel: ReminderListViewModel by viewModel{
+        parametersOf(findNavController())
+    }
 
     private lateinit var adapter: ReminderGroupListAdapter
 
@@ -26,12 +29,12 @@ class ReminderListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        configureRecyclerView()
+    ) = binding.root
 
-        binding.newReminderButton.setOnClickListener {
-            goToNewReminderFragment()
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bind()
+        observeEvents()
 
         viewModel.groupedReminders.observe(viewLifecycleOwner) {
             adapter.update(it)
@@ -42,19 +45,23 @@ class ReminderListFragment : Fragment() {
                 viewModel.deleteReminder(it)
             }
         }
-
-        return binding.root
     }
 
-    private fun configureRecyclerView() {
+    private fun observeEvents() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.events.collect { //event ->
+//                when (event) {
+//                    else -> {}
+//                }
+            }
+        }
+    }
+
+    private fun bind() {
         adapter = ReminderGroupListAdapter(context = this.context)
         binding.recyclerView.adapter = adapter
-    }
 
-    private fun goToNewReminderFragment() {
-        val action =
-            ReminderListFragmentDirections.actionReminderListFragmentToNewReminderFormFragment()
-        findNavController().navigate(action)
+        binding.viewModel = viewModel
     }
 
 }
