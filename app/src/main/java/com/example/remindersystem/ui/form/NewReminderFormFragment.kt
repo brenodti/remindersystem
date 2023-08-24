@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -32,10 +33,12 @@ class NewReminderFormFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        bindEventsAndViewModel()
+    ) = binding.root
 
-        return binding.root
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        bindEventsAndViewModel()
+        observeEvents()
     }
 
     private fun bindEventsAndViewModel() {
@@ -43,29 +46,20 @@ class NewReminderFormFragment : Fragment() {
         binding.showDatePickerEvent = Event.ShowDatePicker
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        observeEvents()
-    }
-
     private fun observeEvents() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.events.collect { event ->
                 when (event) {
-                    is Event.ShowDatePicker -> {
-                        showDatePickerDialog()
-                    }
-
-                    is Event.GoToReminderListFragment -> {
-                        gotToReminderListFragment()
-                    }
-
-                    is Event.ShowToast -> {
-                        Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
-                    }
+                    is Event.ShowToast -> showToast(event)
+                    is Event.GoToReminderListFragment -> gotToReminderListFragment()
+                    is Event.ShowDatePicker -> showDatePickerDialog()
                 }
             }
         }
+    }
+
+    private fun showToast(event: Event.ShowToast) {
+        Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
     }
 
     private fun gotToReminderListFragment() {
