@@ -3,11 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="ShowDatePickerEvent"
+            type="com.example.remindersystem.events.Event.ShowDatePicker" />
+        <variable
+            name="viewModel"
+            type="com.example.remindersystem.ui.form.NewReminderFormViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.form.NewReminderFormFragment">
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/name_text_input_layout"
@@ -20,6 +28,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/name_edit_text"
+                android:text="@={viewModel.name}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/name_hint_edit_text_reminder_form"
@@ -38,6 +47,8 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/date_edit_text"
+                android:text="@={viewModel.date}"
+                android:onClick="@{ () -> viewModel.handleEvent(ShowDatePickerEvent)}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="false"
@@ -50,6 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin"
+            android:onClick='@{ () -> viewModel.addNewReminder() }'
             android:text="@string/save_button_reminder_form"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

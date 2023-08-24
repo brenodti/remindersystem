@@ -9,15 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.remindersystem.databinding.FragmentNewReminderFormBinding
-import com.example.remindersystem.model.Reminder
+import com.example.remindersystem.events.Event
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.time.Instant
-import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -35,17 +33,49 @@ class NewReminderFormFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding.dateEditText.setOnClickListener {
-            showDatePickerDialog()
-        }
-
-        configureSaveButton()
+        bindEventsAndViewModel()
 
         return binding.root
     }
 
+    private fun bindEventsAndViewModel() {
+        binding.viewModel = viewModel
+        binding.showDatePickerEvent = Event.ShowDatePicker
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeEvents()
+    }
+
+    private fun observeEvents() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.events.collect { event ->
+                when (event) {
+                    is Event.ShowDatePicker -> {
+                        showDatePickerDialog()
+                    }
+
+                    is Event.GoToReminderListFragment -> {
+                        gotToReminderListFragment()
+                    }
+
+                    is Event.ShowToast -> {
+                        Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun gotToReminderListFragment() {
+        val action =
+            NewReminderFormFragmentDirections.actionNewReminderFormFragmentToReminderListFragment()
+        findNavController().navigate(action)
+    }
+
     private fun showDatePickerDialog() {
-        val datePicker = configureDatePicker()
+        val datePicker = createDatePicker()
 
         datePicker.addOnPositiveButtonClickListener { selectedDateInMillis ->
             val selectedLocalDate = getFormattedSelectedDate(selectedDateInMillis)
@@ -55,11 +85,17 @@ class NewReminderFormFragment : Fragment() {
         datePicker.show(requireActivity().supportFragmentManager, "datePickerTag")
     }
 
-    private fun configureDatePicker() = MaterialDatePicker.Builder.datePicker()
+    private fun createDatePicker() = MaterialDatePicker.Builder.datePicker()
         .setTitleText("Select date")
         .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
         .setCalendarConstraints(getContraintsToOnlyFutureDates())
         .build()
+
+    private fun getContraintsToOnlyFutureDates(): CalendarConstraints {
+        return CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointForward.now())
+            .build()
+    }
 
     private fun getFormattedSelectedDate(selectedDateInMillis: Long): String? {
         return Instant.ofEpochMilli(selectedDateInMillis)
@@ -68,50 +104,4 @@ class NewReminderFormFragment : Fragment() {
             .plusDays(1)
             .format(dateFormatter)
     }
-
-    private fun getContraintsToOnlyFutureDates(): CalendarConstraints {
-        return CalendarConstraints.Builder()
-            .setValidator(DateValidatorPointForward.now())
-            .build()
-    }
-
-    private fun configureSaveButton() {
-        binding.saveButton.setOnClickListener {
-            if(areFieldsValid()) {
-                lifecycleScope.launch(IO) {
-                    createNewReminder()
-                }
-                goToReminderListFragment()
-            } else {
-                Toast.makeText(this.context, "Fields must not be empty", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private fun areFieldsValid(): Boolean {
-        val date = binding.dateEditText.text.toString().trim()
-        val name = binding.nameEditText.text.toString().trim()
-
-        return name.isNotEmpty() && date.isNotEmpty()
-    }
-
-    private fun goToReminderListFragment() {
-        val action =
-            NewReminderFormFragmentDirections.actionNewReminderFormFragmentToReminderListFragment()
-        findNavController().navigate(action)
-    }
-
-    private suspend fun createNewReminder() {
-        val name = binding.nameEditText.text.toString()
-        val date = binding.dateEditText.text.toString()
-        val unformattedDate = LocalDate.parse(date, dateFormatter)
-
-        viewModel.addNewReminder(
-            Reminder(
-                name = name,
-                date = LocalDate.parse(unformattedDate.toString())
-            )
-        )
-    }
-
 }
