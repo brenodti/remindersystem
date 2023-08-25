@@ -1,59 +1,67 @@
 package com.example.remindersystem.ui.list.recyclerview.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.remindersystem.R
+import com.example.remindersystem.databinding.ItemReminderBinding
 import com.example.remindersystem.databinding.ItemReminderGroupBinding
 import com.example.remindersystem.model.Reminder
+import com.example.remindersystem.ui.list.ReminderListener
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class ReminderGroupListAdapter(
-    private val context: Context?,
-    private var remindersMap: Map<String, List<Reminder>> = emptyMap(),
-    var whenReminderIsLongClickedListener: (reminder: Reminder) -> Unit = {}
-) : RecyclerView.Adapter<ReminderGroupListAdapter.ViewHolder>() {
+class ReminderGroupListAdapter<BINDING : ItemReminderGroupBinding>(
+    private var remindersMap: Map<String, List<Reminder>>,
+    private val reminderListener: ReminderListener
+) : RecyclerView.Adapter<ReminderGroupListAdapter<BINDING>.ViewHolder>() {
 
     private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-    private val dataSet: MutableList<String> = remindersMap.keys.toMutableList()
+    private val dataSet: MutableMap<String, List<Reminder>> = remindersMap.toMutableMap()
 
-    inner class ViewHolder(binding: ItemReminderGroupBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binder: ItemReminderGroupBinding) :
+        RecyclerView.ViewHolder(binder.root) {
 
-        private val dateTextView = binding.dateTextView
-        private val recyclerView = binding.remindersRecyclerView
-        private lateinit var adapter: ReminderRowAdapter
-
-        fun bind(date: String) {
-            val formattedDate = LocalDate.parse(date).format(dateFormatter)
-            dateTextView.text = formattedDate
-            adapter = ReminderRowAdapter(context, remindersMap[date])
-            adapter.whenReminderIsClickedListener = {
-                whenReminderIsLongClickedListener(it)
+        fun bind(
+            binding: ItemReminderGroupBinding,
+            dateInfo: String,
+            remindersList: List<Reminder>
+        ) {
+            val formattedDate = LocalDate.parse(dateInfo).format(dateFormatter)
+            binding.apply {
+                date = formattedDate
+                reminders = remindersList
+                adapter = ReminderRowAdapter<ItemReminderBinding>(remindersList, reminderListener)
+                remindersRecyclerView.adapter = adapter
             }
-
-            recyclerView.adapter = adapter
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemReminderGroupBinding.inflate(LayoutInflater.from(context), parent, false)
+        val binding = DataBindingUtil.inflate<ItemReminderGroupBinding>(
+            LayoutInflater.from(parent.context),
+            R.layout.item_reminder_group,
+            parent,
+            false
+        )
         return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int = dataSet.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val date = dataSet[position]
-        holder.bind(date)
+        val dates = dataSet.keys.toMutableList()
+        val selectedDate = dates[position]
+        val dateWithReminders = dataSet[selectedDate] ?: emptyList()
+        holder.bind(holder.binder, selectedDate, dateWithReminders)
     }
 
-    fun update(remindersMap: Map<String, List<Reminder>>) {
-        this.remindersMap = remindersMap
+    fun update(map: Map<String, List<Reminder>>) {
         this.dataSet.clear()
-        this.dataSet.addAll(remindersMap.keys)
+        this.dataSet.putAll(map)
+        this.remindersMap = map
         notifyDataSetChanged()
     }
 }
