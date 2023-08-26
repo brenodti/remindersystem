@@ -12,6 +12,9 @@
         <variable
             name="date"
             type="String" />
+        <variable
+            name="adapter"
+            type="com.example.remindersystem.ui.list.recyclerview.adapter.ReminderRowAdapter" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

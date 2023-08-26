@@ -1,14 +1,15 @@
 package com.example.remindersystem.ui.list
 
+import android.view.View
+import android.widget.PopupMenu
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
+import com.example.remindersystem.R
 import com.example.remindersystem.db.repository.ReminderRepository
 import com.example.remindersystem.model.Reminder
-import com.example.remindersystem.ui.form.NewReminderFormEvent
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -20,14 +21,10 @@ class ReminderListViewModel(
     private val repository: ReminderRepository,
     private val navController: NavController
 ) : ViewModel(), ReminderListener {
-
     val reminders: LiveData<List<Reminder>> = repository.getAllReminders()
 
     private val _groupedReminders = MutableLiveData<Map<String, List<Reminder>>>()
     val groupedReminders: LiveData<Map<String, List<Reminder>>> = _groupedReminders
-
-    private val _events = MutableSharedFlow<ReminderListEvent>()
-    val events: SharedFlow<ReminderListEvent> = _events.asSharedFlow()
 
     init {
         reminders.observeForever { list ->
@@ -54,32 +51,43 @@ class ReminderListViewModel(
     private fun sortGroupByDate(groupedMap: MutableMap<String, MutableList<Reminder>>): SortedMap<String, MutableList<Reminder>> =
         groupedMap.toSortedMap(compareBy { LocalDate.parse(it) })
 
-
-    suspend fun deleteReminder(reminder: Reminder) {
-        repository.deleteReminder(reminder)
-    }
-
     fun goToNewReminderFragment() {
         val action =
             ReminderListFragmentDirections.actionReminderListFragmentToNewReminderFormFragment()
         navController.navigate(action)
     }
 
-    private fun handleEvent(event: ReminderListEvent) {
-        viewModelScope.launch {
-            _events.emit(event)
+    override fun onReminderLongClicked(reminder: Reminder, view: View): Boolean {
+        val popupMenu = PopupMenu(view.context, view)
+        popupMenu.menuInflater.inflate(R.menu.reminder_menu, popupMenu.menu)
+
+        configureMenuItemListener(popupMenu, reminder)
+
+        popupMenu.show()
+
+        return true
+    }
+
+    private fun configureMenuItemListener(
+        popupMenu: PopupMenu,
+        reminder: Reminder
+    ) {
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item?.itemId) {
+                R.id.menu_reminder_delete -> {
+                    viewModelScope.launch {
+                        repository.deleteReminder(reminder)
+                    }
+                    true
+                }
+
+                else -> false
+            }
         }
     }
 
-    override fun onReminderClicked(reminder: Reminder){
-        handleEvent(ReminderListEvent.ShowToast("${reminder.name} clickado"))
-    }
-
-}
-interface ReminderListener{
-    fun onReminderClicked(reminder: Reminder)
 }
 
-sealed class ReminderListEvent {
-    data class ShowToast(val message: String) : ReminderListEvent()
+interface ReminderListener {
+    fun onReminderLongClicked(reminder: Reminder, view: View): Boolean
 }
