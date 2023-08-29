@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import com.example.remindersystem.db.repository.ReminderRepository
+import com.example.remindersystem.repository.ReminderRepository
 import com.example.remindersystem.model.Reminder
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,7 +41,7 @@ class NewReminderFormViewModel(
 
     private fun saveReminder() {
         val formattedDate = LocalDate.parse(date.value, dateFormatter)
-        val reminder = Reminder(name = name.value, date = formattedDate)
+        val reminder = Reminder(name = name.value, date = formattedDate, imageUrl = null)
 
         viewModelScope.launch {
             repository.insertReminder(reminder)

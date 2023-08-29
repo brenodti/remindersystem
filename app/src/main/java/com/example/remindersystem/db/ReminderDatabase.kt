@@ -12,7 +12,7 @@ import kotlin.concurrent.Volatile
 
 @Database(
     entities = [Reminder::class],
-    version = 1
+    version = 2
 )
 @TypeConverters(Converters::class)
 abstract class ReminderDatabase : RoomDatabase() {
@@ -30,7 +30,10 @@ abstract class ReminderDatabase : RoomDatabase() {
                 context = context,
                 klass = ReminderDatabase::class.java,
                 name = "reminders.db"
-            ).build()
+            ).addMigrations(
+                MIGRATION_1_2
+            )
+                .build()
                 .also {
                     db = it
                 }

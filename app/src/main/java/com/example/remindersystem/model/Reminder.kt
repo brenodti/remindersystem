@@ -9,5 +9,6 @@ data class Reminder(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
     val name: String,
-    val date: LocalDate
+    val date: LocalDate,
+    val imageUrl: String?
 )

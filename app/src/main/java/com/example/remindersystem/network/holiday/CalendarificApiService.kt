@@ -21,7 +21,7 @@ interface CalendarificApiService {
         @Query("api_key") apiKey: String = BuildConfig.CALENDARIFIC_API_KEY,
         @Query("country") country: String = "BR",
         @Query("year") year: Int = 2023,
-        @Query("month") month: Int = 10,
+        @Query("month") month: Int,
         @Query("type") type: String = "national"
     ): Response<HolidayResponse>
 

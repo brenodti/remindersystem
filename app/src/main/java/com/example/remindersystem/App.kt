@@ -3,8 +3,9 @@ package com.example.remindersystem
 import android.app.Application
 import androidx.navigation.NavController
 import com.example.remindersystem.db.ReminderDatabase
-import com.example.remindersystem.db.repository.ReminderRepository
+import com.example.remindersystem.repository.ReminderRepository
 import com.example.remindersystem.network.holiday.CalendarificApiService
+import com.example.remindersystem.network.image.GoogleSearchApiService
 import com.example.remindersystem.ui.form.NewReminderFormViewModel
 import com.example.remindersystem.ui.list.ReminderListViewModel
 import org.koin.android.ext.koin.androidContext
@@ -20,12 +21,13 @@ class App : Application() {
         viewModel { (navController: NavController) -> ReminderListViewModel(get(), navController) }
         viewModel { (navController: NavController) -> NewReminderFormViewModel(get(), navController) }
 
-        single { ReminderRepository(get(), get()) }
+        single { ReminderRepository(get(), get(), get()) }
 
         single { get<ReminderDatabase>().reminderDao() }
         single { ReminderDatabase.getInstance(androidContext()) }
 
         single { CalendarificApiService.CalendarificApi.retrofitService }
+        single { GoogleSearchApiService.GoogleSearchApi.retrofitService }
     }
 
     override fun onCreate() {

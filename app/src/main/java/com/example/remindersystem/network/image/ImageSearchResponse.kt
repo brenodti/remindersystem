@@ -1,5 +1,9 @@
 package com.example.remindersystem.network.image
 
-class ImageSearchResponse {
+data class ImageSearchResponse(
+    val items: List<ImageSearchResponseItem>
+)
 
-}
+data class ImageSearchResponseItem(
+    val link: String
+)

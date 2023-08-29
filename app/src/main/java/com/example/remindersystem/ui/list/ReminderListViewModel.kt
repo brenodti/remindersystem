@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.remindersystem.R
-import com.example.remindersystem.db.repository.ReminderRepository
+import com.example.remindersystem.repository.ReminderRepository
 import com.example.remindersystem.model.Reminder
 import kotlinx.coroutines.launch
 import java.time.LocalDate
