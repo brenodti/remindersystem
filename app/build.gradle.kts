@@ -18,6 +18,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "CALENDARIFIC_API_KEY", "\"${property("CALENDARIFIC_API_KEY")}\"")
+        buildConfigField("String", "GOOGLE_API_KEY", "\"${property("GOOGLE_API_KEY")}\"")
+        buildConfigField("String", "GOOGLE_SEARCH_ENGINE_ID", "\"${property("GOOGLE_SEARCH_ENGINE_ID")}\"")
     }
 
     buildTypes {
@@ -37,6 +41,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures{
+        buildConfig = true
         viewBinding = true
         dataBinding = true
     }
@@ -47,6 +52,7 @@ dependencies {
     val material_version = "1.9.0"
     val room_version = "2.5.2"
     val koin_android_version = "3.4.3"
+    val retrofit_version = "2.9.0"
 
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -83,4 +89,9 @@ dependencies {
 
     //Koin
     implementation("io.insert-koin:koin-android:$koin_android_version")
+
+    //Retrofit
+    implementation("com.squareup.retrofit2:retrofit:$retrofit_version")
+    implementation("com.squareup.retrofit2:converter-gson:$retrofit_version")
+
 }

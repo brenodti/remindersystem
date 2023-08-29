@@ -10,7 +10,6 @@ import java.time.LocalDate
 
 @BindingAdapter("submitList")
 fun submitList(recyclerView: RecyclerView, list: List<Reminder>?) {
-    Timber.i("submitList: $list")
     val adapter = recyclerView.adapter as ReminderRowAdapter<*>?
     adapter?.updateData(list ?: emptyList())
 }
