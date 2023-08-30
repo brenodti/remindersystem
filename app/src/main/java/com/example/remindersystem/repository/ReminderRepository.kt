@@ -14,7 +14,7 @@ class ReminderRepository(
     private val calendarificApi: CalendarificApiService,
     private val googleSearchApi: GoogleSearchApiService
 ) {
-    suspend fun getImageForReminder(reminderName: String): String?{
+    private suspend fun getImageForReminder(reminderName: String): String?{
         val response = googleSearchApi.getImageFromGoogle(searchFor = reminderName)
         if (response.isSuccessful){
             val items = response.body()?.items
@@ -57,7 +57,7 @@ class ReminderRepository(
     }
 
     private suspend fun getHolidays(): List<Holiday> {
-        val response = calendarificApi.getHolidays(month = 10)
+        val response = calendarificApi.getHolidays(month = 9)
         if (response.body()?.response?.holidays == null)
             return emptyList()
         return response.body()!!.response.holidays

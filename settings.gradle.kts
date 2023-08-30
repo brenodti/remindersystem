@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "reminder system"
 include(":app")
+include(":compose")

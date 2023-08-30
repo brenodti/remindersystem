@@ -45,6 +45,7 @@ android {
         viewBinding = true
         dataBinding = true
     }
+    dynamicFeatures += setOf(":compose")
 }
 
 dependencies {
