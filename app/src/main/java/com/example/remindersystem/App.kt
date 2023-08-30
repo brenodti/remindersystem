@@ -6,6 +6,7 @@ import com.example.remindersystem.db.ReminderDatabase
 import com.example.remindersystem.repository.ReminderRepository
 import com.example.remindersystem.network.holiday.CalendarificApiService
 import com.example.remindersystem.network.image.GoogleSearchApiService
+import com.example.remindersystem.ui.detail.ReminderDetailViewModel
 import com.example.remindersystem.ui.form.NewReminderFormViewModel
 import com.example.remindersystem.ui.list.ReminderListViewModel
 import org.koin.android.ext.koin.androidContext
@@ -19,6 +20,7 @@ class App : Application() {
 
     private val appModule = module {
         viewModel { (navController: NavController) -> ReminderListViewModel(get(), navController) }
+        viewModel { (navController: NavController) -> ReminderDetailViewModel(navController) }
         viewModel { (navController: NavController) -> NewReminderFormViewModel(get(), navController) }
 
         single { ReminderRepository(get(), get(), get()) }

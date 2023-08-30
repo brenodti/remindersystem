@@ -20,9 +20,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.example.remindersystem.model.Reminder
 
 @Composable
-fun ReminderDetailScreen(navController: NavController, imageUrl: String?, name: String) {
+fun ReminderDetailScreen(navController: NavController, reminder: Reminder) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -31,9 +32,9 @@ fun ReminderDetailScreen(navController: NavController, imageUrl: String?, name: 
         val imageHeight = with(LocalDensity.current) {
             (180.dp.toPx() * 0.75f).toDp()
         }
-        ReminderImage(imageUrl, imageHeight)
+        ReminderImage(reminder.imageUrl, imageHeight)
         Spacer(modifier = Modifier.height(16.dp))
-        ReminderName(name)
+        ReminderName(reminder.name)
 //        Spacer(modifier = Modifier.height(8.dp))
 //        ReminderDescription(reminder.description)
     }

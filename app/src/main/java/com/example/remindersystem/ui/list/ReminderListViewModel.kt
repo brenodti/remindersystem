@@ -75,6 +75,15 @@ class ReminderListViewModel(
         return true
     }
 
+    override fun onReminderClicked(reminder: Reminder) {
+        goToDetailReminderFragment(reminder)
+    }
+
+    private fun goToDetailReminderFragment(reminder: Reminder) {
+        val action = ReminderListFragmentDirections.actionReminderListFragmentToReminderDetailFragment(reminder)
+        navController.navigate(action)
+    }
+
     private fun configureMenuItemListener(
         popupMenu: PopupMenu,
         reminder: Reminder
@@ -97,4 +106,5 @@ class ReminderListViewModel(
 
 interface ReminderListener {
     fun onReminderLongClicked(reminder: Reminder, view: View): Boolean
+    fun onReminderClicked(reminder: Reminder)
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/reminderListFragment">
     <fragment
@@ -10,6 +11,9 @@
         <action
             android:id="@+id/action_reminderListFragment_to_newReminderFormFragment"
             app:destination="@id/newReminderFormFragment" />
+        <action
+            android:id="@+id/action_reminderListFragment_to_reminderDetailFragment"
+            app:destination="@id/reminderDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/newReminderFormFragment"
@@ -18,5 +22,14 @@
         <action
             android:id="@+id/action_newReminderFormFragment_to_reminderListFragment"
             app:destination="@id/reminderListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reminderDetailFragment"
+        android:name="com.example.remindersystem.ui.detail.ReminderDetailFragment"
+        android:label="fragment_reminder_detail"
+        tools:layout="@layout/fragment_reminder_detail" >
+        <argument
+            android:name="reminder"
+            app:argType="com.example.remindersystem.model.Reminder" />
     </fragment>
 </navigation>

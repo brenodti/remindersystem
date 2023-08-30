@@ -18,6 +18,7 @@
         android:layout_marginStart="@dimen/inner_margin"
         android:layout_marginTop="@dimen/margin"
         android:layout_marginEnd="@dimen/inner_margin"
+        android:onClick="@{ () -> listener.onReminderClicked(reminder)}"
         android:onLongClick="@{ (view) -> listener.onReminderLongClicked(reminder, view) }"
         android:layout_marginBottom="@dimen/margin">
 
