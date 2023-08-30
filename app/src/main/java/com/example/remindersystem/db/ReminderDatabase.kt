@@ -12,7 +12,8 @@ import kotlin.concurrent.Volatile
 
 @Database(
     entities = [Reminder::class],
-    version = 2
+    version = 2,
+    exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class ReminderDatabase : RoomDatabase() {
