@@ -13,11 +13,12 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="300dp"
+        android:layout_height="100dp"
         android:layout_marginStart="@dimen/inner_margin"
         android:layout_marginTop="@dimen/margin"
         android:layout_marginEnd="@dimen/inner_margin"
+        android:elevation="2dp"
         android:onClick="@{ () -> listener.onReminderClicked(reminder)}"
         android:onLongClick="@{ (view) -> listener.onReminderLongClicked(reminder, view) }"
         android:layout_marginBottom="@dimen/margin">
@@ -33,13 +34,26 @@
                 android:fontFamily="@font/montserrat_alternates_light"
                 android:text="@{reminder.name}"
                 android:textAlignment="center"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@id/image_view"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Teste de reminder" />
+
+            <ImageView
+                android:id="@+id/image_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/error"
+                app:setImage="@{reminder.imageUrl}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/name_text_view"
+                app:layout_constraintWidth_percent="0.3"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

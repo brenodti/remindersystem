@@ -1,6 +1,7 @@
 package com.example.remindersystem.ui.list
 
 import android.view.View
+import android.widget.ImageView
 import android.widget.PopupMenu
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,6 +14,9 @@ import com.example.remindersystem.model.Reminder
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.SortedMap
+import coil.load
+import coil.request.Disposable
+import com.bumptech.glide.integration.compose.placeholder
 
 class ReminderListViewModel(
     private val repository: ReminderRepository,

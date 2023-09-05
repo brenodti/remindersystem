@@ -140,5 +140,6 @@ dependencies {
 
     //Coil
     implementation("io.coil-kt:coil-compose:$coil_version")
+    implementation("io.coil-kt:coil:$coil_version")
 
 }
