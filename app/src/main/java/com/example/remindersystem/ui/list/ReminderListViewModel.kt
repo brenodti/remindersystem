@@ -23,18 +23,18 @@ class ReminderListViewModel(
     private val _groupedReminders = MutableLiveData<Map<String, List<Reminder>>>()
     val groupedReminders: LiveData<Map<String, List<Reminder>>> = _groupedReminders
 
-    private var hasLoadedReminders = false
+    private var hasLoadedHolidays = false
 
     init {
-        remindersFromDatabase.observeForever { list ->
-            if(!hasLoadedReminders) {
-                hasLoadedReminders = true
+        remindersFromDatabase.observeForever { reminders ->
+            if(!hasLoadedHolidays) {
                 viewModelScope.launch {
-                    repository.insertHolidaysAsReminders(list)
+                    repository.loadHolidays(reminders)
                 }
+                hasLoadedHolidays = true
             }
 
-            val sortedGroupMapByDate = groupRemindersByDate(list)
+            val sortedGroupMapByDate = groupRemindersByDate(reminders)
             _groupedReminders.postValue(sortedGroupMapByDate)
         }
 
@@ -64,6 +64,15 @@ class ReminderListViewModel(
         navController.navigate(action)
     }
 
+    override fun onReminderClicked(reminder: Reminder) {
+        goToDetailReminderFragment(reminder)
+    }
+
+    private fun goToDetailReminderFragment(reminder: Reminder) {
+        val action = ReminderListFragmentDirections.actionReminderListFragmentToReminderDetailFragment(reminder)
+        navController.navigate(action)
+    }
+
     override fun onReminderLongClicked(reminder: Reminder, view: View): Boolean {
         val popupMenu = PopupMenu(view.context, view)
         popupMenu.menuInflater.inflate(R.menu.reminder_menu, popupMenu.menu)
@@ -73,15 +82,6 @@ class ReminderListViewModel(
         popupMenu.show()
 
         return true
-    }
-
-    override fun onReminderClicked(reminder: Reminder) {
-        goToDetailReminderFragment(reminder)
-    }
-
-    private fun goToDetailReminderFragment(reminder: Reminder) {
-        val action = ReminderListFragmentDirections.actionReminderListFragmentToReminderDetailFragment(reminder)
-        navController.navigate(action)
     }
 
     private fun configureMenuItemListener(
@@ -96,7 +96,6 @@ class ReminderListViewModel(
                     }
                     true
                 }
-
                 else -> false
             }
         }

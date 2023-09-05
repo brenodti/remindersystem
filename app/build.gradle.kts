@@ -68,6 +68,7 @@ dependencies {
     val retrofit_version = "2.9.0"
     val compose_version = "1.5.0"
     val glide_version = "1.0.0-alpha.5"
+    val coil_version = "2.4.0"
 
 
 
@@ -136,5 +137,8 @@ dependencies {
 
     //Glide
     implementation("com.github.bumptech.glide:compose:$glide_version")
+
+    //Coil
+    implementation("io.coil-kt:coil-compose:$coil_version")
 
 }

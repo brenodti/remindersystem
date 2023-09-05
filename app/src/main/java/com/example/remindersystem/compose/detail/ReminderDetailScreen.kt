@@ -15,39 +15,39 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.example.remindersystem.R
 import com.example.remindersystem.model.Reminder
 
 @Composable
 fun ReminderDetailScreen(reminder: Reminder) {
-    ReminderDetailCard(reminder.name, reminder.imageUrl, Modifier.fillMaxSize())
+    ReminderDetailCard(
+        reminder.name,
+        reminder.imageUrl,
+        Modifier.fillMaxSize()
+    )
 }
 
 @Composable
-@OptIn(ExperimentalGlideComposeApi::class)
 private fun ReminderDetailCard(
     name: String,
     imageUrl: String?,
     modifier: Modifier
 ) {
-    /*Image(
-            painter = painterResource(id = R.drawable.not_found),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
-                .height(200.dp)
-                .clip(RoundedCornerShape(CornerSize(12.dp)))
-        )*/
     Column(modifier = modifier) {
-        GlideImage(
-            model = imageUrl,
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageUrl)
+                .crossfade(true)
+                .build(),
+            placeholder = painterResource(id = R.drawable.loading),
+            error = painterResource(id = R.drawable.error),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -61,7 +61,7 @@ private fun ReminderDetailCard(
             fontSize = 20.sp,
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
-                .padding(start = 8.dp)
+                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
                 .border(
                     width = 1.dp,
                     shape = RoundedCornerShape(CornerSize(12.dp)),
@@ -73,11 +73,11 @@ private fun ReminderDetailCard(
 }
 
 @Composable
-@Preview(showBackground = true)
+@Preview(showBackground = true, backgroundColor = 0x808080)
 fun ReminderDetailCardPreview() {
     ReminderDetailCard(
         name = "Exemplo de reminder",
         imageUrl = null,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxWidth()
     )
 }

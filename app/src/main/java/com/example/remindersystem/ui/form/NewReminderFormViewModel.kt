@@ -3,9 +3,9 @@ package com.example.remindersystem.ui.form
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
 import com.example.remindersystem.repository.ReminderRepository
 import com.example.remindersystem.model.Reminder
+import com.example.remindersystem.network.image.ImageSearchService
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter
 
 class NewReminderFormViewModel(
     private val repository: ReminderRepository,
+    private val imageSearchService: ImageSearchService,
     private val navController: NavController
 ) : ViewModel() {
 
@@ -42,7 +43,7 @@ class NewReminderFormViewModel(
     private fun saveReminder() {
         val formattedDate = LocalDate.parse(date.value, dateFormatter)
         viewModelScope.launch {
-            val imageUrl = repository.getImageForReminder(name.value)
+            val imageUrl = imageSearchService.searchForImageUrl(name.value)
             val reminder = Reminder(
                 name = name.value,
                 date = formattedDate,

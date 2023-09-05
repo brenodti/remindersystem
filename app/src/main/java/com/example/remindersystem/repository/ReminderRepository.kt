@@ -3,63 +3,19 @@ package com.example.remindersystem.repository
 import androidx.lifecycle.LiveData
 import com.example.remindersystem.db.dao.ReminderDao
 import com.example.remindersystem.model.Reminder
-import com.example.remindersystem.network.holiday.CalendarificApiService
-import com.example.remindersystem.network.holiday.Holiday
-import com.example.remindersystem.network.image.GoogleSearchApiService
-import timber.log.Timber
-import java.time.LocalDate
+import com.example.remindersystem.network.holiday.HolidayService
 
 class ReminderRepository(
     private val reminderDao: ReminderDao,
-    private val calendarificApi: CalendarificApiService,
-    private val googleSearchApi: GoogleSearchApiService
+    private val holidayService: HolidayService
 ) {
-    suspend fun getImageForReminder(reminderName: String): String{
-        val response = googleSearchApi.getImageFromGoogle(searchFor = reminderName)
-        if (response.isSuccessful){
-            val items = response.body()?.items
-            if(!items.isNullOrEmpty()){
-                return items[0].link
-            }
-        }
-        return "https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg"
-    }
-    suspend fun insertHolidaysAsReminders(reminders: List<Reminder>) {
-        val holidays = getHolidays()
 
-        val newReminders = getOnlyNewReminders(holidays, reminders)
+    suspend fun loadHolidays(reminders: List<Reminder>) {
+        val newReminders = holidayService.tryLoadNewHolidaysAsReminders(reminders)
 
         newReminders.forEach { reminder ->
             insertReminder(reminder)
         }
-    }
-
-    private suspend fun getOnlyNewReminders(
-        holidays: List<Holiday>,
-        reminders: List<Reminder>?
-    ): List<Reminder> {
-        if(reminders == null){
-            return holidays.map { holiday ->
-                val imageUrl = getImageForReminder(holiday.name)
-                Reminder(name = holiday.name, date = LocalDate.parse(holiday.date.dateIso), imageUrl = imageUrl)
-            }
-        }
-
-        return holidays.filter { holiday ->
-            !reminders.any { reminder ->
-                reminder.name == holiday.name && reminder.date.isEqual(LocalDate.parse(holiday.date.dateIso))
-            }
-        }.map { holiday ->
-            val imageUrl = getImageForReminder(holiday.name)
-            Reminder(name = holiday.name, date = LocalDate.parse(holiday.date.dateIso), imageUrl = imageUrl)
-        }
-    }
-
-    private suspend fun getHolidays(): List<Holiday> {
-        val response = calendarificApi.getHolidays(month = 10)
-        if (response.body()?.response?.holidays == null)
-            return emptyList()
-        return response.body()!!.response.holidays
     }
 
     suspend fun insertReminder(reminder: Reminder) {

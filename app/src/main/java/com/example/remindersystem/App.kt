@@ -5,7 +5,9 @@ import androidx.navigation.NavController
 import com.example.remindersystem.db.ReminderDatabase
 import com.example.remindersystem.repository.ReminderRepository
 import com.example.remindersystem.network.holiday.CalendarificApiService
+import com.example.remindersystem.network.holiday.HolidayService
 import com.example.remindersystem.network.image.GoogleSearchApiService
+import com.example.remindersystem.network.image.ImageSearchService
 import com.example.remindersystem.ui.detail.ReminderDetailViewModel
 import com.example.remindersystem.ui.form.NewReminderFormViewModel
 import com.example.remindersystem.ui.list.ReminderListViewModel
@@ -20,16 +22,19 @@ class App : Application() {
 
     private val appModule = module {
         viewModel { (navController: NavController) -> ReminderListViewModel(get(), navController) }
-        viewModel { (navController: NavController) -> ReminderDetailViewModel(navController) }
-        viewModel { (navController: NavController) -> NewReminderFormViewModel(get(), navController) }
+        viewModel { (navController: NavController) -> NewReminderFormViewModel(get(),get(), navController) }
+        viewModel { ReminderDetailViewModel() }
 
-        single { ReminderRepository(get(), get(), get()) }
+        single { ReminderRepository(get(), get()) }
 
         single { get<ReminderDatabase>().reminderDao() }
         single { ReminderDatabase.getInstance(androidContext()) }
 
         single { CalendarificApiService.CalendarificApi.retrofitService }
         single { GoogleSearchApiService.GoogleSearchApi.retrofitService }
+
+        single { HolidayService(get(), get()) }
+        single { ImageSearchService(get()) }
     }
 
     override fun onCreate() {

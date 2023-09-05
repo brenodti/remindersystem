@@ -25,7 +25,6 @@ interface CalendarificApiService {
         @Query("type") type: String = "national"
     ): Response<HolidayResponse>
 
-
     object CalendarificApi {
         val retrofitService: CalendarificApiService by lazy {
             retrofit.create(CalendarificApiService::class.java)
