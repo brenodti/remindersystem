@@ -14,16 +14,15 @@ class ReminderRepository(
     private val calendarificApi: CalendarificApiService,
     private val googleSearchApi: GoogleSearchApiService
 ) {
-    suspend fun getImageForReminder(reminderName: String): String?{
+    suspend fun getImageForReminder(reminderName: String): String{
         val response = googleSearchApi.getImageFromGoogle(searchFor = reminderName)
         if (response.isSuccessful){
             val items = response.body()?.items
             if(!items.isNullOrEmpty()){
-                Timber.i("Link da imagem: ${items[0].link}")
                 return items[0].link
             }
         }
-        return null
+        return "https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg"
     }
     suspend fun insertHolidaysAsReminders(reminders: List<Reminder>) {
         val holidays = getHolidays()

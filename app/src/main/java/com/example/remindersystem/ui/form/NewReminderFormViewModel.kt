@@ -41,9 +41,13 @@ class NewReminderFormViewModel(
 
     private fun saveReminder() {
         val formattedDate = LocalDate.parse(date.value, dateFormatter)
-        val reminder = Reminder(name = name.value, date = formattedDate, imageUrl = null)
-
         viewModelScope.launch {
+            val imageUrl = repository.getImageForReminder(name.value)
+            val reminder = Reminder(
+                name = name.value,
+                date = formattedDate,
+                imageUrl = imageUrl
+            )
             repository.insertReminder(reminder)
         }
     }
@@ -61,7 +65,7 @@ class NewReminderFormViewModel(
     }
 }
 
-sealed class NewReminderFormEvent{
+sealed class NewReminderFormEvent {
     data object ShowDatePicker : NewReminderFormEvent()
     data class ShowToast(val message: String) : NewReminderFormEvent()
 }

@@ -21,7 +21,7 @@ interface GoogleSearchApiService{
         @Query("key") apiKey: String = BuildConfig.GOOGLE_API_KEY,
         @Query("cx") searchEngineId: String = BuildConfig.GOOGLE_SEARCH_ENGINE_ID,
         @Query("searchType") searchType: String = "image",
-        @Query("imgSize") imageSize: String = "xlarge",
+        @Query("imgSize") imageSize: String = "large",
         @Query("imgType") imageType: String = "photo",
         @Query("num") quantity: Int = 1,
         @Query("fileType") fileType: String = "png",

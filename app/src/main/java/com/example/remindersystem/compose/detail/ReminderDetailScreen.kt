@@ -1,20 +1,21 @@
+package com.example.remindersystem.compose.detail
+
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -23,60 +24,60 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.example.remindersystem.model.Reminder
 
 @Composable
-fun ReminderDetailScreen(navController: NavController, reminder: Reminder) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        val imageHeight = with(LocalDensity.current) {
-            (180.dp.toPx() * 0.75f).toDp()
-        }
-        ReminderImage(reminder.imageUrl, imageHeight)
-        Spacer(modifier = Modifier.height(16.dp))
-        ReminderName(reminder.name)
-//        Spacer(modifier = Modifier.height(8.dp))
-//        ReminderDescription(reminder.description)
+fun ReminderDetailScreen(reminder: Reminder) {
+    ReminderDetailCard(reminder.name, reminder.imageUrl, Modifier.fillMaxSize())
+}
+
+@Composable
+@OptIn(ExperimentalGlideComposeApi::class)
+private fun ReminderDetailCard(
+    name: String,
+    imageUrl: String?,
+    modifier: Modifier
+) {
+    /*Image(
+            painter = painterResource(id = R.drawable.not_found),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+                .height(200.dp)
+                .clip(RoundedCornerShape(CornerSize(12.dp)))
+        )*/
+    Column(modifier = modifier) {
+        GlideImage(
+            model = imageUrl,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+                .height(200.dp)
+                .clip(RoundedCornerShape(CornerSize(12.dp)))
+        )
+        Text(
+            text = name,
+            fontSize = 20.sp,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .border(
+                    width = 1.dp,
+                    shape = RoundedCornerShape(CornerSize(12.dp)),
+                    color = Color.Black
+                )
+                .padding(8.dp)
+        )
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ReminderImage(imageUrl: String?, imageHeight: Dp) {
-    GlideImage(
-        model = imageUrl,
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp)
-    )
-}
-
-@Composable
-fun ReminderName(name: String) {
-    BasicTextField(
-        value = name,
-        onValueChange = {},
-        textStyle = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
-        modifier = Modifier
-            .fillMaxWidth()
-//            .align(Alignment.BottomCenter)
-    )
-}
-
-@Composable
-fun ReminderDescription(description: String) {
-    BasicTextField(
-        value = description,
-        onValueChange = {},
-        textStyle = TextStyle(fontSize = 16.sp),
-        keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Done
-        ),
-        keyboardActions = KeyboardActions(
-            onDone = null
-        ),
-        modifier = Modifier.fillMaxWidth()
+@Preview(showBackground = true)
+fun ReminderDetailCardPreview() {
+    ReminderDetailCard(
+        name = "Exemplo de reminder",
+        imageUrl = null,
+        modifier = Modifier.fillMaxSize()
     )
 }
